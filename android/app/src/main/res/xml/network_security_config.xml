@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<network-security-config>
+    <!-- Configuración para permitir tráfico HTTP en general (más permisivo) -->
+    <base-config cleartextTrafficPermitted="true">
+        <trust-anchors>
+            <certificates src="system" />
+        </trust-anchors>
+    </base-config>
+    
+    <!-- Configuración específica para la IP del servidor -->
+    <domain-config cleartextTrafficPermitted="true">
+        <domain includeSubdomains="true">179.43.112.55</domain>
+        <!-- Confiar en certificados del sistema para este dominio -->
+        <trust-anchors>
+            <certificates src="system" />
+        </trust-anchors>
+    </domain-config>
+</network-security-config>
