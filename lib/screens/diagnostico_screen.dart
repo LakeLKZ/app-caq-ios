@@ -110,33 +110,18 @@ class _DiagnosticoScreenState extends State<DiagnosticoScreen> {
     });
     
     try {
-      var connectivityResult = await Connectivity().checkConnectivity();
+      // Simplificamos el chequeo de conectividad para evitar errores de API
       setState(() {
-        String connectionType = "Desconocida";
-        if (connectivityResult == ConnectivityResult.mobile) {
-          connectionType = "Datos móviles";
-        } else if (connectivityResult == ConnectivityResult.wifi) {
-          connectionType = "WiFi";
-        } else if (connectivityResult == ConnectivityResult.none) {
-          connectionType = "Sin conexión";
-        } else if (connectivityResult == ConnectivityResult.ethernet) {
-          connectionType = "Ethernet";
-        } else if (connectivityResult == ConnectivityResult.vpn) {
-          connectionType = "VPN";
-        } else if (connectivityResult == ConnectivityResult.bluetooth) {
-          connectionType = "Bluetooth";
-        } else if (connectivityResult == ConnectivityResult.other) {
-          connectionType = "Otro";
-        }
-        _logs += "\n- Tipo de conexión: $connectionType";
+        _logs += "\n- Verificando estado de conectividad...";
       });
       
-      // Probar conectividad a internet (Google DNS)
+      // Método simplificado: probar conectividad directamente
       try {
         final result = await InternetAddress.lookup('8.8.8.8');
         if (result.isNotEmpty && result[0].rawAddress.isNotEmpty) {
           setState(() {
             _logs += "\n- Internet disponible ✅";
+            _logs += "\n- DNS Google (8.8.8.8) alcanzable ✅";
           });
         }
       } catch (e) {
@@ -144,11 +129,54 @@ class _DiagnosticoScreenState extends State<DiagnosticoScreen> {
           _logs += "\n- Internet NO disponible ❌: $e";
         });
       }
+      
+      // Intentar verificar tipo de conexión de forma segura
+      try {
+        final connectivity = Connectivity();
+        final connectivityResult = await connectivity.checkConnectivity();
+        
+        setState(() {
+          String connectionType = _parseConnectivityResult(connectivityResult);
+          _logs += "\n- Tipo de conexión detectado: $connectionType";
+        });
+      } catch (e) {
+        setState(() {
+          _logs += "\n- No se pudo determinar tipo de conexión: $e";
+        });
+      }
+      
     } catch (e) {
       setState(() {
         _logs += "\n❌ Error verificando conectividad: $e";
       });
     }
+  }
+  
+  String _parseConnectivityResult(dynamic result) {
+    // Manejo compatible para diferentes versiones de connectivity_plus
+    if (result is List) {
+      // Nueva API que devuelve List<ConnectivityResult>
+      if (result.isEmpty) return "Sin conexión";
+      final first = result.first;
+      return _connectivityResultToString(first);
+    } else {
+      // API anterior que devuelve ConnectivityResult
+      return _connectivityResultToString(result);
+    }
+  }
+  
+  String _connectivityResultToString(dynamic result) {
+    final resultStr = result.toString();
+    
+    if (resultStr.contains('mobile')) return "Datos móviles";
+    if (resultStr.contains('wifi')) return "WiFi";
+    if (resultStr.contains('ethernet')) return "Ethernet";
+    if (resultStr.contains('vpn')) return "VPN";
+    if (resultStr.contains('bluetooth')) return "Bluetooth";
+    if (resultStr.contains('other')) return "Otro";
+    if (resultStr.contains('none')) return "Sin conexión";
+    
+    return "Desconocida ($resultStr)";
   }
   
   Future<void> _checkServerConnectivity() async {
@@ -166,7 +194,7 @@ class _DiagnosticoScreenState extends State<DiagnosticoScreen> {
           _logs += "\n- Servidor alcanzable ✅";
         });
         
-        // Intentar ping al servidor (TCP)
+        // Intentar conexión TCP al puerto
         try {
           final socket = await Socket.connect('179.43.112.55', 8080, 
             timeout: Duration(seconds: 5));
@@ -186,52 +214,62 @@ class _DiagnosticoScreenState extends State<DiagnosticoScreen> {
       });
     }
     
-    // Probar una solicitud HTTP simple al servidor
-    try {
-      setState(() {
-        _logs += "\n- Intentando solicitud HTTP al servidor...";
-      });
-      
-      final response = await http.get(
-        Uri.parse('http://179.43.112.55:8080/api/Novedades/ObtenerNovedades'),
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      ).timeout(Duration(seconds: 10));
-      
-      setState(() {
-        _logs += "\n- Respuesta del servidor: ${response.statusCode}";
-        if (response.statusCode >= 200 && response.statusCode < 300) {
-          _logs += " ✅";
-          _logs += "\n- Body (primeros 100 caracteres): ${response.body.length > 100 ? response.body.substring(0, 100) + '...' : response.body}";
-        } else {
-          _logs += " ❌";
-        }
-      });
-    } catch (e) {
-      setState(() {
-        _logs += "\n❌ Error en solicitud HTTP: $e";
-      });
+    // Probar endpoints HTTP específicos
+    final testEndpoints = [
+      '/api/Novedades/ObtenerNovedades',
+      '/api/ValoresImportantes/ObtenerValoresImportantes',
+      '/api/Cursos/ObtenerCursos',
+      '/api/Contactos/ObtenerContactos'
+    ];
+    
+    for (final endpoint in testEndpoints) {
+      try {
+        setState(() {
+          _logs += "\n- Probando: $endpoint";
+        });
+        
+        final response = await http.get(
+          Uri.parse('http://179.43.112.55:8080$endpoint'),
+          headers: {'Content-Type': 'application/json'},
+        ).timeout(Duration(seconds: 10));
+        
+        setState(() {
+          if (response.statusCode >= 200 && response.statusCode < 300) {
+            _logs += " ✅ (${response.statusCode})";
+            if (response.body.isNotEmpty) {
+              final preview = response.body.length > 50 
+                  ? response.body.substring(0, 50) + '...' 
+                  : response.body;
+              _logs += "\n  Datos: $preview";
+            }
+          } else {
+            _logs += " ❌ (${response.statusCode})";
+          }
+        });
+      } catch (e) {
+        setState(() {
+          _logs += " ❌ Error: $e";
+        });
+      }
     }
   }
   
   Future<void> _testApiEndpoints() async {
     setState(() {
-      _logs += "\n\n🔌 PRUEBA DE ENDPOINTS API:";
+      _logs += "\n\n🔌 PRUEBA DE MÉTODOS API:";
     });
     
-    // Lista de endpoints a probar
+    // Endpoints disponibles (sin matrícula)
     final endpoints = [
       {"nombre": "Novedades", "metodo": "getNovedades()"},
       {"nombre": "Valores", "metodo": "getValoresImportantes()"},
       {"nombre": "Cursos", "metodo": "getCursos()"},
-      {"nombre": "Matrícula", "metodo": "getMatricula()"},
       {"nombre": "Contactos", "metodo": "getContactos()"}
     ];
     
     for (var endpoint in endpoints) {
       setState(() {
-        _logs += "\n\n- Probando '${endpoint["nombre"]}':";
+        _logs += "\n\n- Probando ${endpoint["nombre"]}:";
       });
       
       try {
@@ -247,9 +285,6 @@ class _DiagnosticoScreenState extends State<DiagnosticoScreen> {
           case "getCursos()":
             result = await _apiService.getCursos(forceRefresh: true);
             break;
-          case "getMatricula()":
-            result = await _apiService.getMatricula(forceRefresh: true);
-            break;
           case "getContactos()":
             result = await _apiService.getContactos(forceRefresh: true);
             break;
@@ -261,15 +296,15 @@ class _DiagnosticoScreenState extends State<DiagnosticoScreen> {
         }
         
         setState(() {
-          _logs += "\n  ✅ Respuesta obtenida correctamente";
+          _logs += "\n  ✅ Éxito";
           
-          if (result is List && result.isNotEmpty) {
-            _logs += "\n  📊 Items: ${result.length}";
-            if (result.length > 0) {
-              _logs += "\n  🔍 Primer item: ${_formatObjectForDisplay(result[0])}";
+          if (result is List) {
+            _logs += " - ${result.length} elemento(s)";
+            if (result.isNotEmpty) {
+              _logs += "\n  🔍 Primer elemento: ${_formatForDisplay(result[0])}";
             }
           } else if (result != null) {
-            _logs += "\n  🔍 Datos: ${_formatObjectForDisplay(result)}";
+            _logs += "\n  🔍 Resultado: ${_formatForDisplay(result)}";
           } else {
             _logs += "\n  ⚠️ Resultado nulo";
           }
@@ -280,20 +315,39 @@ class _DiagnosticoScreenState extends State<DiagnosticoScreen> {
         });
       }
     }
+    
+    // Verificar endpoint de matrícula (sabemos que devuelve 404)
+    setState(() {
+      _logs += "\n\n- Verificando endpoint Matrícula (eliminado):";
+    });
+    
+    try {
+      final response = await http.get(
+        Uri.parse('http://179.43.112.55:8080/api/Matricula/ObtenerMatricula'),
+      ).timeout(Duration(seconds: 10));
+      
+      setState(() {
+        if (response.statusCode == 404) {
+          _logs += "\n  ✅ 404 - Correctamente eliminado";
+        } else {
+          _logs += "\n  ⚠️ Respuesta inesperada: ${response.statusCode}";
+        }
+      });
+    } catch (e) {
+      setState(() {
+        _logs += "\n  ✅ Error esperado (endpoint eliminado): $e";
+      });
+    }
   }
   
-  String _formatObjectForDisplay(dynamic obj) {
-    // Convertir un objeto en un string resumido para mostrar
+  String _formatForDisplay(dynamic obj) {
     if (obj == null) return "null";
     
     try {
       final str = obj.toString();
-      if (str.length > 100) {
-        return "${str.substring(0, 100)}...";
-      }
-      return str;
+      return str.length > 80 ? "${str.substring(0, 80)}..." : str;
     } catch (e) {
-      return "Error formateando objeto: $e";
+      return "Error al formatear: $e";
     }
   }
   
@@ -305,17 +359,20 @@ class _DiagnosticoScreenState extends State<DiagnosticoScreen> {
           "Diagnóstico de Conexión",
           style: TextStyle(color: Color(0xFF009639)),
         ),
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back, color: Color(0xFF009639)),
+          onPressed: () => Navigator.pop(context),
+        ),
         actions: [
           IconButton(
-            icon: Icon(Icons.refresh),
+            icon: Icon(Icons.refresh, color: Color(0xFF009639)),
             onPressed: _ejecutarDiagnostico,
-            tooltip: "Ejecutar diagnóstico de nuevo",
+            tooltip: "Ejecutar diagnóstico nuevamente",
           ),
         ],
       ),
       body: Stack(
         children: [
-          // Contenido de diagnóstico
           SingleChildScrollView(
             padding: EdgeInsets.all(16),
             child: Column(
@@ -329,7 +386,7 @@ class _DiagnosticoScreenState extends State<DiagnosticoScreen> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          "Resultados del Diagnóstico",
+                          "Diagnóstico de Conectividad",
                           style: TextStyle(
                             fontSize: 18,
                             fontWeight: FontWeight.bold,
@@ -338,7 +395,7 @@ class _DiagnosticoScreenState extends State<DiagnosticoScreen> {
                         ),
                         SizedBox(height: 8),
                         Text(
-                          "Este análisis muestra información sobre la conectividad y funcionamiento de la aplicación.",
+                          "Análisis completo del estado de la aplicación y conectividad al servidor.",
                           style: TextStyle(
                             fontSize: 14,
                             color: Colors.grey[700],
@@ -362,30 +419,29 @@ class _DiagnosticoScreenState extends State<DiagnosticoScreen> {
                       color: Colors.green,
                       fontFamily: "monospace",
                       fontSize: 12,
+                      height: 1.4,
                     ),
                   ),
                 ),
                 SizedBox(height: 16),
-                Row(
-                  children: [
-                    Expanded(
-                      child: ElevatedButton.icon(
-                        icon: Icon(Icons.share),
-                        label: Text("Compartir resultados"),
-                        onPressed: _compartirResultados,
-                        style: ElevatedButton.styleFrom(
-                          padding: EdgeInsets.symmetric(vertical: 12),
-                        ),
-                      ),
+                SizedBox(
+                  width: double.infinity,
+                  child: ElevatedButton.icon(
+                    icon: Icon(Icons.copy),
+                    label: Text("Copiar Diagnóstico"),
+                    onPressed: _mostrarDialogoCopia,
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Color(0xFF009639),
+                      foregroundColor: Colors.white,
+                      padding: EdgeInsets.symmetric(vertical: 12),
                     ),
-                  ],
+                  ),
                 ),
                 SizedBox(height: 24),
               ],
             ),
           ),
           
-          // Indicador de carga
           if (_isLoading)
             Container(
               color: Colors.black.withOpacity(0.5),
@@ -405,9 +461,7 @@ class _DiagnosticoScreenState extends State<DiagnosticoScreen> {
                       SizedBox(height: 16),
                       Text(
                         "Ejecutando diagnóstico...",
-                        style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                        ),
+                        style: TextStyle(fontWeight: FontWeight.bold),
                       ),
                     ],
                   ),
@@ -419,23 +473,48 @@ class _DiagnosticoScreenState extends State<DiagnosticoScreen> {
     );
   }
   
-  void _compartirResultados() {
-    // Por ahora muestra un mensaje simple
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text("Función para compartir aún no implementada"),
-      ),
+  void _mostrarDialogoCopia() {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Diagnóstico Completo'),
+          content: Container(
+            width: double.maxFinite,
+            height: 400,
+            child: SingleChildScrollView(
+              child: SelectableText(
+                _logs,
+                style: TextStyle(
+                  fontFamily: "monospace",
+                  fontSize: 11,
+                ),
+              ),
+            ),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(),
+              child: Text('Cerrar'),
+            ),
+            ElevatedButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    content: Text("Selecciona y copia el texto del diagnóstico"),
+                    backgroundColor: Color(0xFF009639),
+                  ),
+                );
+              },
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Color(0xFF009639),
+              ),
+              child: Text('Entendido'),
+            ),
+          ],
+        );
+      },
     );
-    
-    // Para implementar compartir resultados, necesitarías:
-    // 1. Añadir la dependencia share_plus
-    // 2. Importar el paquete
-    // 3. Implementar algo como esto:
-    /*
-    import 'package:share_plus/share_plus.dart';
-    
-    // Dentro del método _compartirResultados:
-    Share.share(_logs, subject: 'Diagnóstico de la app Colegio de Abogados');
-    */
   }
 }

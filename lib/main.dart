@@ -1,5 +1,6 @@
+// ignore_for_file: prefer_const_constructors, deprecated_member_use
+
 import 'package:flutter/material.dart';
-import 'dart:async';
 
 // Importamos las pantallas
 import 'screens/splash_screen.dart';
@@ -7,15 +8,17 @@ import 'screens/home_screen.dart';
 import 'screens/cursos_screen.dart';
 import 'screens/info_screen.dart';
 import 'screens/contacto_screen.dart';
-import 'screens/info_detail_screen.dart';
-import 'screens/inscripcion_screen.dart';
 import 'screens/diagnostico_screen.dart'; // Añadimos la pantalla de diagnóstico
-
-// Importamos los servicios
-import 'services/api_service.dart';
-
-// Importamos los modelos
-import 'models/models.dart';
+import 'screens/info_screens/sedes_horarios_screen.dart';
+import 'screens/info_screens/correos_utiles_screen.dart';
+import 'screens/info_screens/matricula_pago_screen.dart';
+import 'screens/info_screens/renovacion_credencial_screen.dart';
+import 'screens/info_screens/certificado_matricula_screen.dart';
+import 'screens/info_screens/credencial_empleado_screen.dart';
+import 'screens/info_screens/credencial_mediador_screen.dart';
+import 'screens/info_screens/portal_colproba_screen.dart';
+import 'screens/info_screens/sustitucion_patrocinio_screen.dart';
+import 'screens/info_screens/beneficios_matriculados_screen.dart'; // Nueva pantalla
 
 void main() {
   runApp(MyApp());
@@ -87,22 +90,29 @@ class MyApp extends StatelessWidget {
             return MaterialPageRoute(builder: (_) => InfoScreen());
           case '/contacto':
             return MaterialPageRoute(builder: (_) => ContactoScreen());
-          case '/inscripcion':
-            return MaterialPageRoute(builder: (_) => InscripcionScreen());
-          case '/diagnostico': // Nueva ruta para la pantalla de diagnóstico
+          case '/diagnostico':
             return MaterialPageRoute(builder: (_) => DiagnosticoScreen());
+          case '/info/sedes-horarios':
+            return MaterialPageRoute(builder: (_) => SedesHorariosScreen());
+          case '/info/correos-utiles':
+            return MaterialPageRoute(builder: (_) => CorreosUtilesScreen());
+          case '/info/matricula-pago':
+            return MaterialPageRoute(builder: (_) => MatriculaPagoScreen());
+          case '/info/renovacion-credencial':
+            return MaterialPageRoute(builder: (_) => RenovacionCredencialScreen());
+          case '/info/certificado-matricula': 
+            return MaterialPageRoute(builder: (_) => CertificadoMatriculaScreen());
+          case '/info/credencial-empleado':
+            return MaterialPageRoute(builder: (_) => CredencialEmpleadoScreen());
+          case '/info/credencial-mediador':
+            return MaterialPageRoute(builder: (_) => CredencialMediadorScreen());
+          case '/info/portal-colproba':
+            return MaterialPageRoute(builder: (_) => PortalColprobaScreen());
+          case '/info/sustitucion-patrocinio':
+            return MaterialPageRoute(builder: (_) => SustitucionPatrocinioScreen());
+          case '/info/beneficios-matriculados': // Nueva ruta
+            return MaterialPageRoute(builder: (_) => BeneficiosMatriculadosScreen());
           default:
-            // Manejo de rutas de información detallada
-            if (settings.name!.startsWith('/info/')) {
-              final subRoute = settings.name!.split('/')[2];
-              return MaterialPageRoute(
-                builder: (_) => InfoDetailScreen(
-                  title: subRoute.substring(0, 1).toUpperCase() + subRoute.substring(1),
-                  route: subRoute,
-                ),
-              );
-            }
-            // Ruta por defecto en caso de no encontrar la solicitada
             return MaterialPageRoute(builder: (_) => HomeScreen());
         }
       },

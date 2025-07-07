@@ -1,32 +1,54 @@
 name: colegio_abogados_app
-description: "A new Flutter project."
-publish_to: 'none' # Remove this line if you wish to publish to pub.dev
+description: "Aplicación móvil del Colegio de Abogados de Quilmes"
+publish_to: 'none'
 
-version: 1.0.0+4
+version: 1.0.0+6
 
 environment:
   sdk: ^3.7.2
+  flutter: ">=3.19.0"
 
 dependencies:
   flutter:
     sdk: flutter
-  http: ^1.1.0
-  carousel_slider: ^4.2.1
-  cupertino_icons: ^1.0.2
-  url_launcher: ^6.1.14
-  font_awesome_flutter: ^10.5.0
-  connectivity_plus: ^5.0.1
   
-  # Dependencias adicionales para la pantalla de diagnóstico
-  device_info_plus: ^9.0.3
+  # Dependencias de red optimizadas
+  http: ^1.2.0
+  connectivity_plus: ^5.0.2
+  
+  # UI y navegación optimizada
+  cupertino_icons: ^1.0.6
+  url_launcher: ^6.2.2
+  font_awesome_flutter: ^10.6.0
+  
+  # WebView solo si es absolutamente necesario (comentado para mejor rendimiento)
+  # webview_flutter: ^4.4.4
+  
+  # Información del dispositivo y app
+  device_info_plus: ^9.1.2
   package_info_plus: ^4.2.0
-  # share_plus: ^7.1.0 # Opcional para compartir diagnóstico
+  
+  # Opcional: para compartir diagnóstico
+  # share_plus: ^7.2.2
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
+  flutter_lints: ^3.0.1
 
-  flutter_lints: ^5.0.0
-
+# Configuraciones de optimización
 flutter:
   uses-material-design: true
+  
+  # Configuración optimizada de assets (descomenta si tienes assets)
+  # assets:
+  #   - assets/images/
+  #   - assets/icons/
+  
+  # Configuración de fuentes (opcional para mejor tipografía)
+  # fonts:
+  #   - family: Roboto
+  #     fonts:
+  #       - asset: fonts/Roboto-Regular.ttf
+  #       - asset: fonts/Roboto-Bold.ttf
+  #         weight: 700
