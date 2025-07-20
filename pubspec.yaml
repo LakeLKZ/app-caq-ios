@@ -21,6 +21,10 @@ dependencies:
   url_launcher: ^6.2.2
   font_awesome_flutter: ^10.6.0
   
+  # Dependencias para autenticación y estado
+  shared_preferences: ^2.2.2
+  provider: ^6.0.5
+  
   # WebView solo si es absolutamente necesario (comentado para mejor rendimiento)
   # webview_flutter: ^4.4.4
   
@@ -40,9 +44,8 @@ dev_dependencies:
 flutter:
   uses-material-design: true
   
-  # Configuración optimizada de assets (descomenta si tienes assets)
-  # assets:
-  #   - assets/images/
+  assets:
+    - assets/images/
   #   - assets/icons/
   
   # Configuración de fuentes (opcional para mejor tipografía)

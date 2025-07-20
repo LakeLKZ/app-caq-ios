@@ -143,3 +143,318 @@ class ContactoItem {
     required this.number,
   });
 }
+
+// models/tasa_justicia.dart
+class TasaJusticia {
+  final String articulo;
+  final String inciso;
+  final String descripcion;
+  final String valor;
+  final TipoTasa tipo;
+
+  TasaJusticia({
+    required this.articulo,
+    required this.inciso,
+    required this.descripcion,
+    required this.valor,
+    required this.tipo,
+  });
+
+  // Getter para obtener el texto completo para búsqueda
+  String get textoCompleto {
+    return '${articulo} ${inciso} ${descripcion} ${valor}'.toLowerCase();
+  }
+
+  // Getter para mostrar el título formateado
+  String get tituloFormateado {
+    if (inciso.isNotEmpty) {
+      return '${articulo} ${inciso}';
+    }
+    return articulo;
+  }
+}
+
+enum TipoTasa {
+  porcentual,
+  fijo,
+  porMil,
+}
+
+class TasasJusticiaData {
+  static List<TasaJusticia> obtenerTodasLasTasas() {
+    return [
+      // ART. 77
+      TasaJusticia(
+        articulo: 'ART. 77',
+        inciso: 'a)',
+        descripcion: 'Tasa Justicia valores determinados o determinables',
+        valor: '22 por mil',
+        tipo: TipoTasa.porMil,
+      ),
+      TasaJusticia(
+        articulo: 'ART. 77',
+        inciso: 'b)',
+        descripcion: 'Tasa Justicia valor mínimo',
+        valor: '\$743,00',
+        tipo: TipoTasa.fijo,
+      ),
+      TasaJusticia(
+        articulo: 'ART. 77',
+        inciso: 'c)',
+        descripcion: 'Tasa Justicia valores indeterminados',
+        valor: '\$743,00',
+        tipo: TipoTasa.fijo,
+      ),
+      
+      // ART. 78
+      TasaJusticia(
+        articulo: 'ART. 78',
+        inciso: 'a)',
+        descripcion: 'Árbitros y amigables componedores',
+        valor: '50 por cien',
+        tipo: TipoTasa.porcentual,
+      ),
+      TasaJusticia(
+        articulo: 'ART. 78',
+        inciso: 'b)',
+        descripcion: 'Autorización a incapaces',
+        valor: '\$1.290,00',
+        tipo: TipoTasa.fijo,
+      ),
+      TasaJusticia(
+        articulo: 'ART. 78',
+        inciso: 'c)',
+        descripcion: 'Divorcio inciso 1)',
+        valor: '\$7.349,00',
+        tipo: TipoTasa.fijo,
+      ),
+      TasaJusticia(
+        articulo: 'ART. 78',
+        inciso: 'c)',
+        descripcion: 'Divorcio inciso 2)',
+        valor: '10 por mil',
+        tipo: TipoTasa.porMil,
+      ),
+      TasaJusticia(
+        articulo: 'ART. 78',
+        inciso: 'd)',
+        descripcion: 'Oficios y exhortos',
+        valor: '\$1.686,00',
+        tipo: TipoTasa.fijo,
+      ),
+      TasaJusticia(
+        articulo: 'ART. 78',
+        inciso: 'e)',
+        descripcion: 'Insania',
+        valor: '10 por mil',
+        tipo: TipoTasa.porMil,
+      ),
+      TasaJusticia(
+        articulo: 'ART. 78',
+        inciso: 'f) 1)',
+        descripcion: 'Registro público de comercio - Inscripción de matrícula',
+        valor: '\$3.688,00',
+        tipo: TipoTasa.fijo,
+      ),
+      TasaJusticia(
+        articulo: 'ART. 78',
+        inciso: 'f) 2)',
+        descripcion: 'Registro público de comercio - Gestión o certificación',
+        valor: '\$743,00',
+        tipo: TipoTasa.fijo,
+      ),
+      TasaJusticia(
+        articulo: 'ART. 78',
+        inciso: 'f) 3)',
+        descripcion: 'Registro público de comercio - Libro de comercio rubricado',
+        valor: '\$743,00',
+        tipo: TipoTasa.fijo,
+      ),
+      TasaJusticia(
+        articulo: 'ART. 78',
+        inciso: 'f) 4)',
+        descripcion: 'Registro público de comercio - Certificación de firma',
+        valor: '\$1.557,00',
+        tipo: TipoTasa.fijo,
+      ),
+      TasaJusticia(
+        articulo: 'ART. 78',
+        inciso: 'g)',
+        descripcion: 'Protocolizaciones',
+        valor: '\$1.290,00',
+        tipo: TipoTasa.fijo,
+      ),
+      TasaJusticia(
+        articulo: 'ART. 78',
+        inciso: 'h)',
+        descripcion: 'Rehabilitación de concursados',
+        valor: '3 por mil',
+        tipo: TipoTasa.porMil,
+      ),
+      TasaJusticia(
+        articulo: 'ART. 78',
+        inciso: 'i)',
+        descripcion: 'Sucesorios',
+        valor: '22 por mil',
+        tipo: TipoTasa.porMil,
+      ),
+      TasaJusticia(
+        articulo: 'ART. 78',
+        inciso: 'j)',
+        descripcion: 'Testimonio',
+        valor: '\$78,00',
+        tipo: TipoTasa.fijo,
+      ),
+      TasaJusticia(
+        articulo: 'ART. 78',
+        inciso: 'k)',
+        descripcion: 'Justicia de paz letrada',
+        valor: 'Tasas del presente título',
+        tipo: TipoTasa.fijo,
+      ),
+      
+      // ART. 79
+      TasaJusticia(
+        articulo: 'ART. 79',
+        inciso: '',
+        descripcion: 'Justicia Penal - Causas correccionales',
+        valor: '\$6.735,00',
+        tipo: TipoTasa.fijo,
+      ),
+      TasaJusticia(
+        articulo: 'ART. 79',
+        inciso: '',
+        descripcion: 'Justicia Penal - Causas criminales',
+        valor: '\$13.928,00',
+        tipo: TipoTasa.fijo,
+      ),
+      TasaJusticia(
+        articulo: 'ART. 79',
+        inciso: '',
+        descripcion: 'Justicia Penal - Presentación particular damnificado',
+        valor: '\$3.668,00',
+        tipo: TipoTasa.fijo,
+      ),
+      
+      // ART. 80
+      TasaJusticia(
+        articulo: 'ART. 80',
+        inciso: '',
+        descripcion: 'Tasa general por actuación de expediente',
+        valor: '\$1.050,00',
+        tipo: TipoTasa.fijo,
+      ),
+      TasaJusticia(
+        articulo: 'ART. 80',
+        inciso: '',
+        descripcion: 'Prestaciones de servicios sujetas a retrib. proporc.',
+        valor: '\$1.050,00',
+        tipo: TipoTasa.fijo,
+      ),
+    ];
+  }
+  
+}
+
+
+// Agregar estos modelos a tu archivo models/models.dart existente
+
+// Modelos de Usuario y Autenticación
+class User {
+  final int id;
+  final String nombre;
+  final String apellido;
+  final String dni;
+  final String email;
+  final String whatsapp;
+  final String tomo;
+  final String folio;
+  final int colegioId;
+
+  User({
+    required this.id,
+    required this.nombre,
+    required this.apellido,
+    required this.dni,
+    required this.email,
+    required this.whatsapp,
+    required this.tomo,
+    required this.folio,
+    required this.colegioId,
+  });
+
+  factory User.fromJson(Map<String, dynamic> json) {
+    return User(
+      id: json['id'] ?? 0,
+      nombre: json['nombre'] ?? '',
+      apellido: json['apellido'] ?? '',
+      dni: json['dni'] ?? '',
+      email: json['email'] ?? '',
+      whatsapp: json['whatsapp'] ?? '',
+      tomo: json['tomo'] ?? '',
+      folio: json['folio'] ?? '',
+      colegioId: json['colegio_id'] ?? 0,
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'nombre': nombre,
+      'apellido': apellido,
+      'dni': dni,
+      'email': email,
+      'whatsapp': whatsapp,
+      'tomo': tomo,
+      'folio': folio,
+      'colegio_id': colegioId,
+    };
+  }
+
+  String get nombreCompleto => '$nombre $apellido';
+}
+
+class Colegio {
+  final int id;
+  final String nombre;
+  final bool activo;
+
+  Colegio({
+    required this.id,
+    required this.nombre,
+    required this.activo,
+  });
+
+  factory Colegio.fromJson(Map<String, dynamic> json) {
+    return Colegio(
+      id: json['id'] ?? 0,
+      nombre: json['nombre'] ?? '',
+      activo: json['activo'] ?? false,
+    );
+  }
+}
+
+class AuthResponse {
+  final int resultado;
+  final String mensaje;
+  final User? usuario;
+  final int? usuarioId;
+
+  AuthResponse({
+    required this.resultado,
+    required this.mensaje,
+    this.usuario,
+    this.usuarioId,
+  });
+
+  factory AuthResponse.fromJson(Map<String, dynamic> json) {
+    return AuthResponse(
+      resultado: json['resultado'] ?? 0,
+      mensaje: json['mensaje'] ?? '',
+      usuario: json['usuario'] != null ? User.fromJson(json['usuario']) : null,
+      usuarioId: json['usuarioId'],
+    );
+  }
+
+  bool get isSuccess => resultado == 1;
+}

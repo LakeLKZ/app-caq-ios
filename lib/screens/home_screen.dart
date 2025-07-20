@@ -4,6 +4,7 @@ import '../models/models.dart';
 import '../services/api_service.dart';
 import '../widgets/bottom_nav_bar.dart';
 import '../widgets/error_widget.dart';
+import '../screens/info_screens/tasas_justicia_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   @override
@@ -41,11 +42,53 @@ class _HomeScreenState extends State<HomeScreen>
   
   final ScrollController _scrollController = ScrollController();
 
+  // Variables para Tasas de Justicia
+  final TextEditingController _tasasSearchController = TextEditingController();
+  List<TasaJusticia> _todasLasTasas = [];
+  List<TasaJusticia> _tasasFiltradas = [];
+  bool _isTasasSearching = false;
+
   @override
   void initState() {
     super.initState();
     _pageController = PageController();
     _loadAllData();
+    _initTasasJusticia();
+  }
+
+  void _initTasasJusticia() {
+    _todasLasTasas = TasasJusticiaData.obtenerTodasLasTasas();
+    _tasasFiltradas = _todasLasTasas; // Mostrar todas las tasas desde el inicio
+    _tasasSearchController.addListener(_filtrarTasas);
+  }
+
+  void _filtrarTasas() {
+    final query = _tasasSearchController.text.toLowerCase().trim();
+    
+    setState(() {
+      _isTasasSearching = query.isNotEmpty;
+      
+      if (query.isEmpty) {
+        // Si no hay búsqueda, mostrar todas las tasas (sin límite de 5)
+        _tasasFiltradas = _todasLasTasas;
+      } else {
+        // Filtrar por texto de búsqueda
+        _tasasFiltradas = _todasLasTasas.where((tasa) {
+          return tasa.textoCompleto.contains(query);
+        }).toList();
+      }
+    });
+  }
+
+  Color _getColorByTipo(TipoTasa tipo) {
+    switch (tipo) {
+      case TipoTasa.fijo:
+        return Color(0xFF009639);
+      case TipoTasa.porcentual:
+        return Color(0xFF1976D2);
+      case TipoTasa.porMil:
+        return Color(0xFFFF9800);
+    }
   }
 
   @override
@@ -54,6 +97,8 @@ class _HomeScreenState extends State<HomeScreen>
     _autoScrollTimer?.cancel();
     _pageController.dispose();
     _scrollController.dispose();
+    _tasasSearchController.removeListener(_filtrarTasas);
+    _tasasSearchController.dispose();
     super.dispose();
   }
 
@@ -238,14 +283,223 @@ class _HomeScreenState extends State<HomeScreen>
                 _buildValoresImportantesSection(),
                 SizedBox(height: 24),
                 _buildUltimosCursosSection(),
+                SizedBox(height: 24),
+                _buildTasasJusticiaSection(), // Nueva sección
                 SizedBox(height: 16),
-                // Eliminamos completamente la sección de Matrícula
               ],
             ),
           ),
         ),
       ),
       bottomNavigationBar: BottomNavBar(currentIndex: 0),
+    );
+  }
+
+  // Nueva sección para Tasas de Justicia
+  Widget _buildTasasJusticiaSection() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        // Título sin ícono
+        Text(
+          "Tasas de Justicia 2025",
+          style: TextStyle(
+            fontSize: 20,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        SizedBox(height: 16),
+        
+        // Buscador
+        _buildTasasSearchBar(),
+        SizedBox(height: 16),
+        
+        // Info sobre resultados
+        _buildTasasSearchInfo(),
+        SizedBox(height: 8),
+        
+        // Lista de tasas (scrolleable) - mostrar 5 páginas de 5 tasas
+        _buildTasasList(),
+      ],
+    );
+  }
+
+  Widget _buildTasasSearchBar() {
+    return Container(
+      padding: EdgeInsets.symmetric(horizontal: 16),
+      decoration: BoxDecoration(
+        color: Colors.grey[50],
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(
+          color: _isTasasSearching ? Color(0xFF009639) : Colors.grey[300]!,
+          width: _isTasasSearching ? 2 : 1,
+        ),
+      ),
+      child: Row(
+        children: [
+          Icon(
+            Icons.search,
+            color: _isTasasSearching ? Color(0xFF009639) : Colors.grey[600],
+            size: 20,
+          ),
+          SizedBox(width: 12),
+          Expanded(
+            child: TextField(
+              controller: _tasasSearchController,
+              decoration: InputDecoration(
+                hintText: "Buscar por artículo, descripción o valor...",
+                hintStyle: TextStyle(
+                  fontSize: 14,
+                  color: Colors.grey[600],
+                ),
+                border: InputBorder.none,
+                contentPadding: EdgeInsets.symmetric(vertical: 16),
+              ),
+              style: TextStyle(fontSize: 14),
+            ),
+          ),
+          if (_isTasasSearching)
+            IconButton(
+              icon: Icon(
+                Icons.clear,
+                color: Colors.grey[600],
+                size: 20,
+              ),
+              onPressed: () {
+                _tasasSearchController.clear();
+              },
+              tooltip: "Limpiar",
+            ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildTasasSearchInfo() {
+    return Row(
+      children: [
+        Icon(
+          Icons.info_outline,
+          color: Colors.grey[600],
+          size: 16,
+        ),
+        SizedBox(width: 8),
+        Expanded(
+          child: Text(
+            _isTasasSearching 
+              ? "Mostrando ${_tasasFiltradas.length} resultado(s) de ${_todasLasTasas.length}"
+              : "Mostrando todas las tasas disponibles (${_todasLasTasas.length})",
+            style: TextStyle(
+              fontSize: 13,
+              color: Colors.grey[600],
+              fontWeight: FontWeight.w500,
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildTasasList() {
+    if (_tasasFiltradas.isEmpty) {
+      return Container(
+        height: 120,
+        child: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Icon(
+                Icons.search_off,
+                color: Colors.grey[400],
+                size: 32,
+              ),
+              SizedBox(height: 8),
+              Text(
+                "No se encontraron tasas",
+                style: TextStyle(
+                  color: Colors.grey[600],
+                  fontSize: 14,
+                ),
+              ),
+            ],
+          ),
+        ),
+      );
+    }
+    
+    return Container(
+      height: 300, // Altura fija para permitir scroll
+      child: ListView.builder(
+        padding: EdgeInsets.zero,
+        itemCount: _tasasFiltradas.length,
+        itemBuilder: (context, index) {
+          final tasa = _tasasFiltradas[index];
+          return _buildTasaItem(tasa);
+        },
+      ),
+    );
+  }
+
+  Widget _buildTasaItem(TasaJusticia tasa) {
+    Color color = _getColorByTipo(tasa.tipo);
+    
+    return Container(
+      margin: EdgeInsets.only(bottom: 8),
+      padding: EdgeInsets.all(12),
+      decoration: BoxDecoration(
+        color: color.withOpacity(0.05),
+        borderRadius: BorderRadius.circular(8),
+        border: Border.all(
+          color: color.withOpacity(0.2),
+          width: 1,
+        ),
+      ),
+      child: Row(
+        children: [
+          Container(
+            width: 8,
+            height: 8,
+            decoration: BoxDecoration(
+              color: color,
+              shape: BoxShape.circle,
+            ),
+          ),
+          SizedBox(width: 12),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  tasa.descripcion,
+                  style: TextStyle(
+                    fontSize: 13,
+                    fontWeight: FontWeight.w600,
+                    color: Color(0xFF003366),
+                  ),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                ),
+                Text(
+                  tasa.articulo,
+                  style: TextStyle(
+                    fontSize: 12,
+                    color: Colors.grey[600],
+                  ),
+                ),
+              ],
+            ),
+          ),
+          SizedBox(width: 8),
+          Text(
+            tasa.valor,
+            style: TextStyle(
+              fontSize: 13,
+              fontWeight: FontWeight.bold,
+              color: color,
+            ),
+          ),
+        ],
+      ),
     );
   }
 
@@ -512,6 +766,7 @@ class _HomeScreenState extends State<HomeScreen>
       ],
     );
   }
+
 
   Widget _buildUltimosCursosSection() {
     return Column(

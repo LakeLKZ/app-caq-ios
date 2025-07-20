@@ -593,6 +593,331 @@ class InfoScreen extends StatelessWidget {
                 ),
               ),
             ),
+            SizedBox(height: 16),
+            // Card para Servicios OCA - NUEVO
+            Card(
+              elevation: 2,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(12),
+              ),
+              child: InkWell(
+                onTap: () => Navigator.pushNamed(context, '/info/servicios-oca'),
+                borderRadius: BorderRadius.circular(12),
+                child: Padding(
+                  padding: EdgeInsets.all(20),
+                  child: Row(
+                    children: [
+                      // Ícono
+                      Container(
+                        padding: EdgeInsets.all(16),
+                        decoration: BoxDecoration(
+                          color: Color(0x1AFF6F00), // Naranja OCA con opacidad
+                          shape: BoxShape.circle,
+                        ),
+                        child: Icon(
+                          Icons.local_post_office,
+                          color: Color(0xFFFF6F00),
+                          size: 32,
+                        ),
+                      ),
+                      SizedBox(width: 20),
+                      
+                      // Contenido
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              'Servicios OCA',
+                              style: TextStyle(
+                                fontSize: 18,
+                                fontWeight: FontWeight.bold,
+                                color: Color(0xFF003366),
+                              ),
+                            ),
+                            SizedBox(height: 4),
+                            Text(
+                              'Carta documento y envío de sobres',
+                              style: TextStyle(
+                                fontSize: 14,
+                                color: Colors.grey[600],
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      
+                      // Flecha
+                      Icon(
+                        Icons.arrow_forward_ios,
+                        size: 16,
+                        color: Color(0xFFFF6F00),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+            SizedBox(height: 16),
+            // Card para Personas Jurídicas - NUEVO
+            Card(
+              elevation: 2,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(12),
+              ),
+              child: InkWell(
+                onTap: () => Navigator.pushNamed(context, '/info/personas-juridicas'),
+                borderRadius: BorderRadius.circular(12),
+                child: Padding(
+                  padding: EdgeInsets.all(20),
+                  child: Row(
+                    children: [
+                      // Ícono
+                      Container(
+                        padding: EdgeInsets.all(16),
+                        decoration: BoxDecoration(
+                          color: Color(0x1A1976D2), // Azul con opacidad
+                          shape: BoxShape.circle,
+                        ),
+                        child: Icon(
+                          Icons.corporate_fare,
+                          color: Color(0xFF1976D2),
+                          size: 32,
+                        ),
+                      ),
+                      SizedBox(width: 20),
+                      
+                      // Contenido
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              'Personas Jurídicas',
+                              style: TextStyle(
+                                fontSize: 18,
+                                fontWeight: FontWeight.bold,
+                                color: Color(0xFF003366),
+                              ),
+                            ),
+                            SizedBox(height: 4),
+                            Text(
+                              'Delegación de la Dirección Provincial',
+                              style: TextStyle(
+                                fontSize: 14,
+                                color: Colors.grey[600],
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      
+                      // Flecha
+                      Icon(
+                        Icons.arrow_forward_ios,
+                        size: 16,
+                        color: Color(0xFF1976D2),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+            SizedBox(height: 16),
+            // Card para Firma Digital - NUEVO
+            Card(
+              elevation: 2,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(12),
+              ),
+              child: InkWell(
+                onTap: () => Navigator.pushNamed(context, '/info/firma-digital'),
+                borderRadius: BorderRadius.circular(12),
+                child: Padding(
+                  padding: EdgeInsets.all(20),
+                  child: Row(
+                    children: [
+                      // Ícono
+                      Container(
+                        padding: EdgeInsets.all(16),
+                        decoration: BoxDecoration(
+                          color: Color(0x1A1565C0), // Azul con opacidad
+                          shape: BoxShape.circle,
+                        ),
+                        child: Icon(
+                          Icons.verified_user,
+                          color: Color(0xFF1565C0),
+                          size: 32,
+                        ),
+                      ),
+                      SizedBox(width: 20),
+                      
+                      // Contenido
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              'Firma Digital',
+                              style: TextStyle(
+                                fontSize: 18,
+                                fontWeight: FontWeight.bold,
+                                color: Color(0xFF003366),
+                              ),
+                            ),
+                            SizedBox(height: 4),
+                            Text(
+                              'Tramitación de certificados digitales',
+                              style: TextStyle(
+                                fontSize: 14,
+                                color: Colors.grey[600],
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      
+                      // Flecha
+                      Icon(
+                        Icons.arrow_forward_ios,
+                        size: 16,
+                        color: Color(0xFF1565C0),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+            SizedBox(height: 16),
+            // Card para DNI y Pasaporte - NUEVO
+            Card(
+              elevation: 2,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(12),
+              ),
+              child: InkWell(
+                onTap: () => Navigator.pushNamed(context, '/info/dni-pasaporte'),
+                borderRadius: BorderRadius.circular(12),
+                child: Padding(
+                  padding: EdgeInsets.all(20),
+                  child: Row(
+                    children: [
+                      // Ícono
+                      Container(
+                        padding: EdgeInsets.all(16),
+                        decoration: BoxDecoration(
+                          color: Color(0x1A1976D2), // Azul con opacidad
+                          shape: BoxShape.circle,
+                        ),
+                        child: Icon(
+                          Icons.assignment_ind,
+                          color: Color(0xFF1976D2),
+                          size: 32,
+                        ),
+                      ),
+                      SizedBox(width: 20),
+                      
+                      // Contenido
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              'DNI y Pasaporte',
+                              style: TextStyle(
+                                fontSize: 18,
+                                fontWeight: FontWeight.bold,
+                                color: Color(0xFF003366),
+                              ),
+                            ),
+                            SizedBox(height: 4),
+                            Text(
+                              'Centro de Documentación ReNaPer',
+                              style: TextStyle(
+                                fontSize: 14,
+                                color: Colors.grey[600],
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      
+                      // Flecha
+                      Icon(
+                        Icons.arrow_forward_ios,
+                        size: 16,
+                        color: Color(0xFF1976D2),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+            SizedBox(height: 16),
+            // Card para Registro de la Propiedad - NUEVO
+            Card(
+              elevation: 2,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(12),
+              ),
+              child: InkWell(
+                onTap: () => Navigator.pushNamed(context, '/info/registro-propiedad'),
+                borderRadius: BorderRadius.circular(12),
+                child: Padding(
+                  padding: EdgeInsets.all(20),
+                  child: Row(
+                    children: [
+                      // Ícono
+                      Container(
+                        padding: EdgeInsets.all(16),
+                        decoration: BoxDecoration(
+                          color: Color(0x1A1976D2), // Azul con opacidad
+                          shape: BoxShape.circle,
+                        ),
+                        child: Icon(
+                          Icons.home_work,
+                          color: Color(0xFF1976D2),
+                          size: 32,
+                        ),
+                      ),
+                      SizedBox(width: 20),
+                      
+                      // Contenido
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              'Registro de la Propiedad',
+                              style: TextStyle(
+                                fontSize: 18,
+                                fontWeight: FontWeight.bold,
+                                color: Color(0xFF003366),
+                              ),
+                            ),
+                            SizedBox(height: 4),
+                            Text(
+                              'Usuario RPBA y formularios online',
+                              style: TextStyle(
+                                fontSize: 14,
+                                color: Colors.grey[600],
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      
+                      // Flecha
+                      Icon(
+                        Icons.arrow_forward_ios,
+                        size: 16,
+                        color: Color(0xFF1976D2),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
           ],
         ),
       ),

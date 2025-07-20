@@ -5,7 +5,7 @@
 	<key>CFBundleDevelopmentRegion</key>
 	<string>$(DEVELOPMENT_LANGUAGE)</string>
 	<key>CFBundleDisplayName</key>
-	<string>Colegio Abogados App</string>
+	<string>CAQ - Colegio Abogados</string>
 	<key>CFBundleExecutable</key>
 	<string>$(EXECUTABLE_NAME)</string>
 	<key>CFBundleIdentifier</key>
@@ -45,5 +45,43 @@
 	<true/>
 	<key>UIApplicationSupportsIndirectInputEvents</key>
 	<true/>
+	
+	<!-- ========== CONFIGURACIONES AGREGADAS PARA CAQ APP ========== -->
+	
+	<!-- Permitir conexiones HTTP para el servidor API -->
+	<key>NSAppTransportSecurity</key>
+	<dict>
+		<key>NSExceptionDomains</key>
+		<dict>
+			<key>179.43.112.55</key>
+			<dict>
+				<key>NSExceptionAllowsInsecureHTTPLoads</key>
+				<true/>
+				<key>NSExceptionMinimumTLSVersion</key>
+				<string>TLSv1.0</string>
+				<key>NSExceptionRequiresForwardSecrecy</key>
+				<false/>
+			</dict>
+		</dict>
+	</dict>
+	
+	<!-- Permitir abrir apps externas (WhatsApp, Email, Teléfono) -->
+	<key>LSApplicationQueriesSchemes</key>
+	<array>
+		<string>whatsapp</string>
+		<string>mailto</string>
+		<string>tel</string>
+		<string>http</string>
+		<string>https</string>
+	</array>
+	
+	<!-- Versión mínima de iOS (opcional pero recomendado) -->
+	<key>MinimumOSVersion</key>
+	<string>12.0</string>
+	
+	<!-- Descripción para uso de internet (opcional pero buena práctica) -->
+	<key>NSNetworkUsageDescription</key>
+	<string>Esta aplicación necesita acceso a internet para conectarse a los servicios del Colegio de Abogados de Quilmes.</string>
+	
 </dict>
 </plist>
